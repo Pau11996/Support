@@ -2,18 +2,18 @@ version: '3.7'
 
 services:
 
-  bdb:
+  db2:
     image: postgres:latest
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data2/
     environment:
       POSTGRES_PASSWORD: BUYB2QAZ
       POSTGRES_USER: postgres
-      POSTGRES_DB: Leather_product
+      POSTGRES_DB: Support
     restart: always
 
   bweb:
-    container_name: web
+    container_name: web2
     build:
       context: support
       dockerfile: Dockerfile
@@ -25,12 +25,12 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - bdb
+      - db2
       - redis
 
   celery:
     build: ./support
-    command: celery -A api worker --app=api.celeryconf:app --loglevel=info
+    command: celery -A Support worker -l info
     volumes:
       - ./support:/usr/src/support
     environment:
