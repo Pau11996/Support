@@ -2,14 +2,14 @@ version: '3.7'
 
 services:
 
-  db2:
+  db:
     image: postgres:latest
     volumes:
-      - postgres_data:/var/lib/postgresql/data2/
+      - postgres_data:/var/lib/postgresql/data/
     environment:
       POSTGRES_PASSWORD: BUYB2QAZ
       POSTGRES_USER: postgres
-      POSTGRES_DB: Support
+      POSTGRES_DB: Support_db
     restart: always
 
   bweb:
@@ -17,15 +17,13 @@ services:
     build:
       context: support
       dockerfile: Dockerfile
-    command: bash -c "python /usr/src/support/manage.py makemigrations --noinput &&
-             python /usr/src/support/manage.py migrate --noinput &&
-             python /usr/src/support/manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python /usr/src/support/manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./support:/usr/src/support
     ports:
       - "8000:8000"
     depends_on:
-      - db2
+      - db
       - redis
 
   celery:

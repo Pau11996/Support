@@ -1,8 +1,21 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+from rest_framework import routers
+from .views import TicketView, \
+    UpdateMessageView, \
+    CreateListMessageView,\
+    DestroyMessageView
 
-from .views import BaseView
+
+router = routers.SimpleRouter()
+router.register('tickets', TicketView)
+# router.register('tickets/<int:pk>/messages/', UpdateDestroyMessageView)
 
 urlpatterns = [
-    path('', BaseView.as_view())
+    path('tickets/<int:pk>/messages/', CreateListMessageView.as_view({'get': 'list',
+                                                                      'post': 'create', })),
+    path('tickets/<int:pk>/messages/<int:update_message_pk>', UpdateMessageView.as_view()),
+    path('tickets/<int:pk>/messages/<int:delete_message_pk>', DestroyMessageView.as_view()),
+
 ]
+
+urlpatterns += router.urls
