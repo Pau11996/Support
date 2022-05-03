@@ -8,7 +8,7 @@ from .views import TicketView, \
 
 router = routers.SimpleRouter()
 router.register('tickets', TicketView)
-# router.register('tickets/<int:pk>/messages/', UpdateDestroyMessageView)
+
 
 urlpatterns = [
     path('tickets/<int:pk>/messages/', CreateListMessageView.as_view({'get': 'list',
