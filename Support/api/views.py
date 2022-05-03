@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 
 from .tasks import send_change_status_email
-from .viewsets.classes import CreateListRetrieveUpdateDestroyS, CreateListS, UpdateDestroyS
+from .viewsets.classes import CreateListRetrieveUpdateDestroyS, CreateListS
 
 from .serializers import TicketCreateSerializer, \
     MessageSerializer, \
@@ -28,6 +28,8 @@ class TicketView(CreateListRetrieveUpdateDestroyS):
                                     'list': [IsAuthenticated]}
 
     def get_serializer_class(self):
+        """Flexibly define serializers"""
+
         if self.action == 'update' or self.action == 'partial_update':
             return TicketChangeStatusSerializer
         elif self.action == 'list':
@@ -38,6 +40,8 @@ class TicketView(CreateListRetrieveUpdateDestroyS):
             return TicketCreateSerializer
 
     def list(self, request, *args, **kwargs):
+        """Ticket list for User-author and for Support"""
+
         if request.user.is_staff:
             queryset = self.filter_queryset(self.get_queryset())
         else:
@@ -51,6 +55,8 @@ class TicketView(CreateListRetrieveUpdateDestroyS):
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
+        """Sends a message when the support changes the status of a ticket"""
+
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -81,6 +87,10 @@ class CreateListMessageView(CreateListS):
     def get_queryset(self):
         ticket = self.kwargs['pk']
         return Message.objects.filter(ticket=ticket)
+
+
+# I wanted to beautifully build urls according to the rest,
+# so I decided to put them in separate views
 
 
 class UpdateMessageView(generics.UpdateAPIView):

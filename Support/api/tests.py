@@ -4,6 +4,7 @@ from rest_framework.test import APITestCase, APIClient
 
 
 class TicketTests(APITestCase):
+    """Testing jwt auth and ticket list view"""
 
     def test_ticket_list(self):
 
