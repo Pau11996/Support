@@ -12,7 +12,7 @@ class TicketCreateSerializer(serializers.ModelSerializer):
 
 
 class TicketDetailSerializer(serializers.ModelSerializer):
-    """Serialize all tickets for Supports"""
+    """Serialize all tickets for detail view"""
 
     author = serializers.SlugRelatedField(slug_field='username', read_only='True')
 
