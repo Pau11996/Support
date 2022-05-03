@@ -19,7 +19,7 @@ class Ticket(models.Model):
     first_name = models.CharField(max_length=255, verbose_name='Name')
     last_name = models.CharField(max_length=255, verbose_name='Last name')
     email = models.EmailField(max_length=50, verbose_name='Email')
-    author = models.ForeignKey(User, verbose_name='author', on_delete=models.CASCADE, null=True, blank=True)
+    author = models.ForeignKey(User, verbose_name='author', on_delete=models.CASCADE)
     phone = models.CharField(max_length=255, verbose_name='Phone', validators=[RegexValidator(r'^\+[0-9]{12}$')])
     address = models.CharField(max_length=1024, verbose_name='Address', null=True, blank=True)
     title = models.CharField(max_length=100, verbose_name='Tickets title')
@@ -46,8 +46,7 @@ class Message(models.Model):
     ticket = models.ForeignKey(Ticket,
                                verbose_name='Ticket message',
                                on_delete=models.CASCADE,
-                               related_name='Messages',
-                               null=True, blank=True)
+                               related_name='Messages', )
     comment_date = models.DateTimeField(verbose_name='Date message created', auto_now=True)
 
     def __str__(self):
