@@ -57,8 +57,7 @@ and the support team will promptly solve the user's problem
 ###### smtp credentials
 
     SMTP_EMAIL_USE_TLS = True or False                   TLS and SSL is certificates protecting user information from intruders.
-    SMTP_EMAIL_USE_SSL = True or False                   Can be only SSL or TLS, rather TLS. 
-    SMTP_EMAIL_HOST = 'smtp.gmail.com'
+    SMTP_EMAIL_USE_SSL = True or False                   Can be only SSL or TLS, rather TLS. (config in settings file)
     SMTP_EMAIL_HOST_USER = 'email_for_sendind_messages'
     SMTP_EMAIL_HOST_PASSWORD = 'email_password'
     SMTP_EMAIL_PORT = email_port
