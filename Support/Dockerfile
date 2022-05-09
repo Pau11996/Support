@@ -1,12 +1,16 @@
-FROM python:3.9
+FROM python:3.10.4
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /usr/src/support
 
-COPY ./req.txt /usr/src/req.txt
-RUN pip install -r /usr/src/req.txt
+COPY Pipfile Pipfile.lock /usr/src/support/
+RUN pip install pipenv
+RUN pipenv install --system
+
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 COPY . /usr/src/support
 

@@ -4,16 +4,14 @@ from .models import Ticket, Message
 
 
 class TicketCreateSerializer(serializers.ModelSerializer):
-    """Serialize all tickets"""
-
+    """Serialize all tickets."""
     class Meta:
         model = Ticket
         fields = ('first_name', 'last_name', 'email', 'phone', 'address', 'title', 'text', )
 
 
 class TicketDetailSerializer(serializers.ModelSerializer):
-    """Serialize all tickets for detail view"""
-
+    """Serialize all tickets for detail view."""
     author = serializers.SlugRelatedField(slug_field='username', read_only='True')
 
     class Meta:
@@ -22,8 +20,7 @@ class TicketDetailSerializer(serializers.ModelSerializer):
 
 
 class TicketChangeStatusSerializer(serializers.ModelSerializer):
-    """Serialize all tickets for change status"""
-
+    """Serialize all tickets for change status."""
     class Meta:
         model = Ticket
         fields = '__all__'
@@ -32,17 +29,15 @@ class TicketChangeStatusSerializer(serializers.ModelSerializer):
 
 
 class TicketListSerializer(serializers.ModelSerializer):
-    """Serialize tickets list"""
-
+    """Serialize tickets list."""
     class Meta:
         model = Ticket
-        fields = ('title', 'status', 'ticket_date', 'id')
+        fields = ('title', 'status', 'ticket_date', 'id', )
         read_only_fields = ('__all__', )
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    """Serialize messages"""
-
+    """Serialize messages."""
     author = serializers.SlugRelatedField(slug_field='username', read_only='True')
 
     class Meta:
@@ -52,8 +47,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class MessageAdminSerializer(serializers.ModelSerializer):
-    """Serialize messages for Admin user"""
-
+    """Serialize messages for Admin user."""
     class Meta:
         model = Message
         fields = '__all__'

@@ -4,33 +4,32 @@ from ..models import Ticket
 
 
 class IsStaff(BasePermission):
-    """Support"""
-    def has_permission(self, request, view):
+    """Support access."""
+    def has_permission(self, request: object, view: object):
         return request.user and request.user.is_staff
 
 
 class IsAuthorOrIsStaff(BasePermission):
-    """Is author or Support"""
-    def has_permission(self, request, view):
+    """Access for author or support."""
+    def has_permission(self, request: object, view: object):
         return request.user or request.user.is_staff
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: object, view: object, obj: object):
         return obj.author == request.user or request.user.is_staff
 
 
 class IsSuperUser(BasePermission):
-    """Superuser"""
-    def has_permission(self, request, view):
+    """Access for superuser."""
+    def has_permission(self, request: object, view: object):
         return request.user and request.user.is_superuser
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: object, view: object, obj: object):
         return request.user and request.user.is_superuser
 
 
 class IsAuthorTicket(BasePermission):
-    """Ticket Author or Support"""
-
-    def has_permission(self, request, view):
+    """The list of messages is available only for the tickets author or support."""
+    def has_permission(self, request: object, view: object):
         ticket = Ticket.objects.get(id=request.resolver_match.kwargs.get('pk'))
         return ticket.author == request.user or request.user.is_staff
 

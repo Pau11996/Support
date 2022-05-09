@@ -1,3 +1,4 @@
+from django.http import HttpRequest, HttpResponse
 from rest_framework import generics
 from rest_framework.response import Response
 
@@ -17,8 +18,7 @@ from .viewsets.permissions import IsStaff, IsAuthorOrIsStaff, IsSuperUser, IsAut
 
 
 class TicketView(CreateListRetrieveUpdateDestroyS):
-    """Ticket image"""
-
+    """Ticket image."""
     queryset = Ticket.objects.all().order_by('-status')
     permission_classes = [IsStaff]
     serializer_class = TicketCreateSerializer
@@ -28,20 +28,19 @@ class TicketView(CreateListRetrieveUpdateDestroyS):
                                     'list': [IsAuthenticated]}
 
     def get_serializer_class(self):
-        """Flexibly define serializers"""
+        """Flexibly define serializers."""
+        match self.action:
+            case 'update' | 'partial_update':
+                return TicketChangeStatusSerializer
+            case 'list':
+                return TicketListSerializer
+            case 'retrieve':
+                return TicketDetailSerializer
+            case 'create':
+                return TicketCreateSerializer
 
-        if self.action == 'update' or self.action == 'partial_update':
-            return TicketChangeStatusSerializer
-        elif self.action == 'list':
-            return TicketListSerializer
-        elif self.action == 'retrieve':
-            return TicketDetailSerializer
-        else:
-            return TicketCreateSerializer
-
-    def list(self, request, *args, **kwargs):
-        """Ticket list for User-author and for Support"""
-
+    def list(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Ticket list for User-author and for Support."""
         if request.user.is_staff:
             queryset = self.filter_queryset(self.get_queryset())
         else:
@@ -54,11 +53,10 @@ class TicketView(CreateListRetrieveUpdateDestroyS):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    def update(self, request, *args, **kwargs):
-        """Sends a message when the support changes the status of a ticket"""
-
+    def update(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Sends a message when the support changes the status of a ticket."""
         partial = kwargs.pop('partial', False)
-        instance = self.get_object()
+        instance: object = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         send_change_status_email.delay(serializer.instance.email, serializer.instance.status, serializer.validated_data)
@@ -70,21 +68,23 @@ class TicketView(CreateListRetrieveUpdateDestroyS):
         return Response(serializer.data)
 
     def perform_create(self, serializer):
+        """When creating a ticket, the author field is filled in automatically."""
         serializer.save(author=self.request.user)
 
 
 class CreateListMessageView(CreateListS):
-    """"Create and review messages list"""
-
+    """"Create and review messages list."""
     queryset = Message.objects.all()
     permission_classes = [IsAuthorTicket]
     serializer_class = MessageSerializer
 
     def perform_create(self, serializer):
+        """When creating a message, the author and ticket fields is filled in automatically."""
         ticket = Ticket.objects.get(id=self.kwargs['pk'])
         serializer.save(author=self.request.user, ticket=ticket)
 
     def get_queryset(self):
+        """Display only messages of a specific ticket."""
         ticket = self.kwargs['pk']
         return Message.objects.filter(ticket=ticket)
 
@@ -94,12 +94,14 @@ class CreateListMessageView(CreateListS):
 
 
 class UpdateMessageView(generics.UpdateAPIView):
+    """View for update messages."""
     queryset = Message.objects.all()
     permission_classes = [IsSuperUser]
     serializer_class = MessageAdminSerializer
 
 
 class DestroyMessageView(generics.DestroyAPIView):
+    """View for destroy messages."""
     queryset = Message.objects.all()
     permission_classes = [IsSuperUser]
     serializer_class = MessageAdminSerializer
