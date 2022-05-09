@@ -38,7 +38,7 @@ and the support team will promptly solve the user's problem
     
 ## Project configurations
 
-##### Use the .env file to set up the project
+##### Use the .env file to set up the project config
 
     DEBUG = True or Fale  (Debug mode)
     SECRET_KEY = 'very_reliable_secret_key'
